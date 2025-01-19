@@ -3,8 +3,6 @@ import pickle
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import mean_squared_error
 
 # Memuat model yang telah dilatih
 with open('models.pkl', 'rb') as f:
@@ -16,7 +14,7 @@ st.title("Prediksi Supply Chain Management")
 # Deskripsi Aplikasi
 st.write("""
 Aplikasi ini menggunakan model Random Forest Regressor untuk memprediksi berbagai nilai terkait 
-dengan supply chain management berdasarkan dua fitur: `storageCost` dan `interestRate`.
+dengan supply chain management berdasarkan dua fitur: storageCost dan interestRate.
 """)
 
 # Input dari pengguna untuk fitur
@@ -51,21 +49,49 @@ if st.button("Prediksi"):
         
         predictions[target_column] = prediction[0]
         
-        st.write(f"**Prediksi untuk {target_column}:**")
+        st.write(f"*Prediksi untuk {target_column}:*")
         st.write(f"  Prediksi nilai: {prediction[0]:.2f}")
 
     # Analisis Prediksi
     st.subheader("Analisis Prediksi")
 
-    # Menampilkan grafik perbandingan antara nilai prediksi dan input fitur
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.bar(predictions.keys(), predictions.values(), color='skyblue')
-    ax.set_xlabel('Target Columns')
-    ax.set_ylabel('Prediksi Nilai')
-    ax.set_title('Perbandingan Prediksi untuk Setiap Target')
-    plt.xticks(rotation=90)
-    st.pyplot(fig)
-
-    # Menghitung dan menampilkan nilai rata-rata prediksi
+    # Menyimpan nilai maksimum, minimum, dan rata-rata
+    max_prediction = max(predictions.values())
+    min_prediction = min(predictions.values())
     avg_prediction = np.mean(list(predictions.values()))
-    st.write(f"**Nilai rata-rata dari semua prediksi:** {avg_prediction:.2f}")
+
+    # Grafik nilai maksimum
+    st.write(f"*Nilai maksimum dari semua prediksi:* {max_prediction:.2f}")
+    fig_max, ax_max = plt.subplots(figsize=(12, 6))
+    ax_max.bar(predictions.keys(), predictions.values(), color='skyblue')
+    ax_max.axhline(y=max_prediction, color='green', linestyle='--', label=f'Maksimum ({max_prediction:.2f})')
+    ax_max.set_xlabel('Target Columns')
+    ax_max.set_ylabel('Prediksi Nilai')
+    ax_max.set_title('Grafik Nilai Maksimum')
+    plt.xticks(rotation=90)
+    plt.legend()
+    st.pyplot(fig_max)
+
+    # Grafik nilai minimum
+    st.write(f"*Nilai minimum dari semua prediksi:* {min_prediction:.2f}")
+    fig_min, ax_min = plt.subplots(figsize=(12, 6))
+    ax_min.bar(predictions.keys(), predictions.values(), color='skyblue')
+    ax_min.axhline(y=min_prediction, color='red', linestyle='--', label=f'Minimum ({min_prediction:.2f})')
+    ax_min.set_xlabel('Target Columns')
+    ax_min.set_ylabel('Prediksi Nilai')
+    ax_min.set_title('Grafik Nilai Minimum')
+    plt.xticks(rotation=90)
+    plt.legend()
+    st.pyplot(fig_min)
+
+    # Grafik nilai rata-rata
+    st.write(f"*Nilai rata-rata dari semua prediksi:* {avg_prediction:.2f}")
+    fig_avg, ax_avg = plt.subplots(figsize=(12, 6))
+    ax_avg.bar(predictions.keys(), predictions.values(), color='skyblue')
+    ax_avg.axhline(y=avg_prediction, color='orange', linestyle='--', label=f'Rata-rata ({avg_prediction:.2f})')
+    ax_avg.set_xlabel('Target Columns')
+    ax_avg.set_ylabel('Prediksi Nilai')
+    ax_avg.set_title('Grafik Nilai Rata-rata')
+    plt.xticks(rotation=90)
+    plt.legend()
+    st.pyplot(fig_avg)
